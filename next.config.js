@@ -5,50 +5,17 @@ const nextConfig = {
   // 성능 최적화
   swcMinify: true,
   
-  // 번들 분석기 (환경 변수로 제어)
-  ...(process.env.ANALYZE === 'true' && {
-    plugins: [require('@next/bundle-analyzer')()]
-  }),
-  
   // 이미지 최적화
   images: {
-    domains: ['firebasestorage.googleapis.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+      }
+    ],
     formats: ['image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-  },
-  
-  // 캐싱 최적화
-  async headers() {
-    return [
-      {
-        source: '/_next/static/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/api/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=60, s-maxage=60',
-          },
-        ],
-      },
-      {
-        source: '/:path*.{jpg,jpeg,png,webp,avif}',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=2592000',
-          },
-        ],
-      },
-    ]
   },
   
   // 압축 최적화
@@ -58,34 +25,12 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
-    // Turbo Mode (experimental)
-    turbo: {
-      loaders: {
-        '.csv': 'csv-loader',
-        '.xlsx': 'file-loader'
-      }
-    }
   },
   
   // 번들 최적화
   webpack: (config, { dev, isServer }) => {
     // 프로덕션 빌드 최적화
     if (!dev && !isServer) {
-      // Firebase SDK 트리 쉐이킹 최적화
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        '@firebase/app': require.resolve('@firebase/app'),
-        '@firebase/auth': require.resolve('@firebase/auth'),
-        '@firebase/firestore': require.resolve('@firebase/firestore'),
-        '@firebase/storage': require.resolve('@firebase/storage'),
-      }
-      
-      // Chart.js 트리 쉐이킹
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'chart.js': require.resolve('chart.js/dist/chart.esm.js'),
-      }
-      
       // 번들 분석기 최적화
       config.optimization = {
         ...config.optimization,
@@ -118,21 +63,10 @@ const nextConfig = {
               name: 'chart',
               priority: 9,
             },
-            excel: {
-              test: /[\\/]node_modules[\\/](xlsx|papaparse)[\\/]/,
-              name: 'excel',
-              priority: 8,
-            },
           },
         },
       }
     }
-    
-    // CSV 로더 추가
-    config.module.rules.push({
-      test: /\.csv$/,
-      use: ['csv-loader']
-    })
     
     return config
   },
@@ -154,6 +88,33 @@ const nextConfig = {
   // 보안 헤더
   async headers() {
     return [
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=60, s-maxage=60',
+          },
+        ],
+      },
+      {
+        source: '/:path*.{jpg,jpeg,png,webp,avif}',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=2592000',
+          },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [
