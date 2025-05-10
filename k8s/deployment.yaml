@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chartai
+  labels:
+    app: chartai
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chartai
+  template:
+    metadata:
+      labels:
+        app: chartai
+    spec:
+      containers:
+      - name: chartai
+        image: your-registry/chartai:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3000"
+        - name: NEXT_PUBLIC_FIREBASE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: chartai-secrets
+              key: firebase-api-key
+        - name: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: chartai-secrets
+              key: firebase-auth-domain
+        - name: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+          valueFrom:
+            secretKeyRef:
+              name: chartai-secrets
+              key: firebase-project-id
+        - name: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: chartai-secrets
+              key: firebase-storage-bucket
+        - name: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+          valueFrom:
+            secretKeyRef:
+              name: chartai-secrets
+              key: firebase-messaging-sender-id
+        - name: NEXT_PUBLIC_FIREBASE_APP_ID
+          valueFrom:
+            secretKeyRef:
+              name: chartai-secrets
+              key: firebase-app-id
+        - name: NEXTAUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: chartai-secrets
+              key: nextauth-secret
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+      imagePullSecrets:
+      - name: registry-credentials
