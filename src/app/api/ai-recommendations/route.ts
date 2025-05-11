@@ -150,7 +150,7 @@ function generateChartData(recommendation: any, data: ParsedData) {
       labels: valueColumns,
       datasets: [{
         label: labels[0],
-        data: valueIndices.map(idx => Number(sampleData[0][idx]) || 0),
+        data: valueIndices.map((idx: number) => Number(sampleData[0][idx]) || 0),
         fill: true,
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         borderColor: 'rgb(75, 192, 192)',

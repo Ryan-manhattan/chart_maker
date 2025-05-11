@@ -15,6 +15,11 @@ export interface ChartConfig {
   type: ChartType
   data: ChartData
   options?: any
+  metadata?: {
+    description?: string
+    reason?: string
+    confidence?: number
+  }
 }
 
 export interface ParsedData {
