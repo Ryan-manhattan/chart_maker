@@ -61,6 +61,9 @@ export async function POST(request: Request) {
     })
     
     const aiResponse = completion.choices[0].message.content
+    if (!aiResponse) {
+      throw new Error('AI로부터 응답을 받지 못했습니다.')
+    }
     const recommendations = JSON.parse(aiResponse)
     
     // ChartConfig 형태로 변환

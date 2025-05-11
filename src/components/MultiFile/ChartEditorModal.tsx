@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Bar, Line, Pie, Doughnut, Radar, PieChart } from 'lucide-react'
+import { X, BarChart3, LineChart, PieChart, CircleDashed, Hexagon } from 'lucide-react'
 import { UploadedFile, ReportChart, ChartPosition } from '@/types/report'
 import { ChartType } from '@/types/chart'
 import ChartPreview from '@/components/ChartPreview'
@@ -15,11 +15,11 @@ interface ChartEditorModalProps {
 }
 
 const chartTypes: Array<{ type: ChartType; icon: any; label: string }> = [
-  { type: 'bar', icon: Bar, label: '막대 차트' },
-  { type: 'line', icon: Line, label: '선 차트' },
-  { type: 'pie', icon: Pie, label: '파이 차트' },
-  { type: 'doughnut', icon: Doughnut, label: '도넛 차트' },
-  { type: 'radar', icon: Radar, label: '레이더 차트' },
+  { type: 'bar', icon: BarChart3, label: '막대 차트' },
+  { type: 'line', icon: LineChart, label: '선 차트' },
+  { type: 'pie', icon: PieChart, label: '파이 차트' },
+  { type: 'doughnut', icon: CircleDashed, label: '도넛 차트' },
+  { type: 'radar', icon: Hexagon, label: '레이더 차트' },
   // { type: 'polarArea', icon: PieChart, label: '극좌표 영역 차트' },
 ]
 

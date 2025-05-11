@@ -313,8 +313,48 @@ export const getFileMimeType = (file: File): string => {
 }
 
 /**
- * 원본 파일 데이터 읽기 (업로드된 파일 그대로)
+ * 컨럼 타입 추론
  */
+export const inferColumnTypes = (data: any[], headers: string[]): Record<string, 'number' | 'string' | 'date'> => {
+  const columnTypes: Record<string, 'number' | 'string' | 'date'> = {}
+  
+  headers.forEach(header => {
+    const values = data.map(row => row[header]).filter(v => v !== null && v !== undefined && v !== '')
+    
+    if (values.length === 0) {
+      columnTypes[header] = 'string'
+      return
+    }
+    
+    // 숫자 타입 검사
+    const numberValues = values.filter(v => !isNaN(Number(v)))
+    const numberRatio = numberValues.length / values.length
+    
+    if (numberRatio > 0.8) {
+      columnTypes[header] = 'number'
+      return
+    }
+    
+    // 날짜 타입 검사
+    const dateValues = values.filter(v => {
+      const date = new Date(v)
+      return !isNaN(date.getTime()) && v.toString().match(/^\d{4}-\d{2}-\d{2}|^\d{1,2}\/\d{1,2}\/\d{4}|^\d{1,2}-\d{1,2}-\d{4}$/)
+    })
+    const dateRatio = dateValues.length / values.length
+    
+    if (dateRatio > 0.8) {
+      columnTypes[header] = 'date'
+      return
+    }
+    
+    // 기본은 문자열
+    columnTypes[header] = 'string'
+  })
+  
+  return columnTypes
+}
+
+
 export const readRawFile = async (file: File): Promise<{ content: string; encoding: string }> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
