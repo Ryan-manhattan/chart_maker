@@ -295,9 +295,11 @@ graph TD
 - [x] 자동 백업 시스템
 - [x] 배포 후 자동 검증
 - [x] Slack 알림 통합
+- [x] OpenAI API 통합
+- [x] AI 기반 차트 추천
+- [x] Vercel 프로덕션 배포 완료
 
 🔄 **진행 중인 기능**
-- [ ] OpenAI API 연동 완료
 - [ ] 폴더 관리 기능 개선
 - [ ] 리포트 PDF 다운로드
 
@@ -317,6 +319,24 @@ graph TD
 | CLS | < 0.1 | 측정 필요 |
 | 번들 크기 | < 1MB | 최적화 적용 |
 | Lighthouse 점수 | 90+ | 측정 필요 |
+
+## OpenAI API 설정
+
+### 1. API 키 발급
+1. [OpenAI Platform](https://platform.openai.com/api-keys) 접속
+2. "Create new secret key" 클릭
+3. 키 이름: "ChartAI"
+4. API 키 복사
+
+### 2. Vercel 환경 변수 설정
+```bash
+OPENAI_API_KEY=your_openai_api_key
+```
+
+### 3. AI 기능
+- 데이터 분석 기반 차트 타입 추천
+- 차트 설명 자동 생성
+- 최적의 데이터 시각화 제안
 
 ## Firebase 설정
 
@@ -463,4 +483,4 @@ NEXTAUTH_SECRET=your_nextauth_secret
 
 ---
 
-마지막 업데이트: 2025-05-11 - 전체 기능 테스트, 성능 최적화 및 배포 인프라 구축 완료
+마지막 업데이트: 2025-05-11 - 전체 기능 테스트, 성능 최적화, 배포 인프라 구축 및 OpenAI API 통합 완료

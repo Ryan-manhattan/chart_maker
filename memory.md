@@ -246,6 +246,29 @@ service firebase.storage {
 }
 ```
 
+### OpenAI API 통합 (2025-05-11 구현)
+1. **API 경로 추가**
+   - `/api/ai-recommendations`: AI 차트 추천 엔드포인트
+   - GPT-4-turbo-preview 모델 사용
+   - 데이터 분석 기반 차트 타입 추천
+   
+2. **AI 추천 시스템**
+   - 8가지 차트 타입 지원
+   - 신뢰도 기반 추천 순위
+   - 고전 후홈백 메커니즘
+   - 차트 설정 자동 최적화
+   
+3. **OpenAI 통합 기능**
+   - 데이터 팩턴 분석
+   - 차트 타입 자동 추천
+   - 차트 설명 자동 생성
+   - 최적의 데이터 시각화 제안
+   
+4. **에러 처리**
+   - OpenAI API 오류 시 폴백 추천 제공
+   - TypeScript 타입 안전성 보장
+   - 비동기 에러 처리
+
 ### 배포 관련 주의사항 (2025-05-11)
 1. **환경 변수 보안**
    - GitHub Secrets에 모든 민감 정보 저장
@@ -321,10 +344,29 @@ service firebase.storage {
    - 빌드 캐시 활용
    - Docker 레이어 캐싱
 
-### AI 기능 개발 시 주의사항
-- OpenAI API 키 환경 변수 관리
-- AI 응답 오류 처리
-- 토큰 제한 고려
+### AI 기능 개발 시 주의사항 (2025-05-11 업데이트)
+1. **OpenAI API 통합**
+   - API 키 환경 변수 관리: `OPENAI_API_KEY`
+   - GPT-4-turbo-preview 모델 사용 기준
+   - 토큰 사용량 모니터링
+   - 매달 API 비용 추적
+   
+2. **AI 응답 처리**
+   - JSON 파싱 에러 처리
+   - 타임아웃 설정 (30초)
+   - 최대 토큰 수 제한
+   - Rate limiting 고려
+   
+3. **후홈백 메커니즘**
+   - OpenAI API 오류 시 기본 추천 사용
+   - 로컬 후큨백 추천 알고리즘
+   - 사용자 경험 연속성 보장
+   
+4. **수동 추천 알고리즘**
+   - 컨럼 타입 분석 로직
+   - 데이터 팩턴 인식
+   - 적합도 점수 계산
+   - 신뢰도 순 정렬
 
 ### 알려진 이슈 및 개선사항
 1. **성능 최적화**
@@ -352,7 +394,7 @@ service firebase.storage {
 
 ---
 
-마지막 업데이트: 2025-05-11 전체 기능 테스트, 성능 최적화 및 배포 인프라 구축 완료
+마지막 업데이트: 2025-05-11 전체 기능 테스트, 성능 최적화, 배포 인프라 구축 및 OpenAI API 통합 완료
 
 ### 배포 관련 스크립트 참고
 ```bash
@@ -378,5 +420,7 @@ alias monitor="watch 'kubectl get pods && kubectl logs -f deployment/chartai'"
 - Kubernetes 설정: `k8s/`
 - 백업 스크립트: `scripts/backup-firebase.js`
 - 배포 검증: `scripts/post-deploy.sh`
+- OpenAI API 경로: `src/app/api/ai-recommendations/route.ts`
+- AI 유틸리티: `src/utils/aiRecommendations.ts`
 - Vercel 프로젝트: `https://vercel.com/dashboard`
-- GitHub Actions: `https://github.com/your-org/chartai/actions`
+- GitHub Actions: `https://github.com/Ryan-manhattan/chart_maker/actions`
